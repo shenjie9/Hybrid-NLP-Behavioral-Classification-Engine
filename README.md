@@ -1,234 +1,381 @@
-<<<<<<< HEAD
-# ArtSense ML
+# Hybrid Text & Behavioural Classification Engine
 
-**Hybrid NLP and sentiment-based artwork classification engine**
+Machine learning system that combines natural language processing (NLP) features and structured survey-response data to classify artwork perceptions using a custom multiclass logistic regression implementation.
 
-ArtSense ML predicts which artwork a survey respondent is reacting to by combining free-text responses with structured emotional and behavioral ratings.
+---
 
 ## Project Overview
 
-The model classifies responses into one of three paintings:
+This project investigates whether subjective emotional reactions and free-text survey responses can be used to identify which artwork a participant is viewing.
 
-- *The Persistence of Memory*
-- *The Starry Night*
-- *The Water Lily Pond*
+Participants were shown a series of paintings and asked to provide both structured ratings and open-ended textual responses describing their perceptions, emotions, and associations. These responses were transformed into machine learning features and used to train a multiclass classification system capable of predicting the underlying artwork.
 
-The pipeline combines:
+The system classifies responses into one of three paintings:
 
-1. **Text preprocessing** using regex tokenization and Bag-of-Words features
-2. **Numeric feature cleaning** for noisy survey responses
-3. **Feature normalization** using training-set statistics
-4. **Multiclass logistic regression from scratch** using softmax, cross-entropy loss, L2 regularization, and vectorized gradient descent
-5. **Saved inference artifacts** for reproducible prediction
+* *The Persistence of Memory* — Salvador Dalí
+* *The Starry Night* — Vincent van Gogh
+* *The Water Lily Pond* — Claude Monet
 
-## Why This Project Matters
+---
 
-This project demonstrates practical ML engineering skills beyond simply calling a library model:
+## Key Features
 
-- implemented logistic regression from scratch with NumPy
-- built an end-to-end training and inference pipeline
-- handled noisy real-world survey-style data
-- combined NLP features with structured numeric features
-- saved model artifacts for reuse during inference
-- compared model variants including Random Forest, Decision Tree, and Naive Bayes hybrid approaches
-- visualized numeric feature distributions and hyperparameter tuning behavior
+* Custom multiclass logistic regression implementation using NumPy
+* Softmax probability outputs and cross-entropy loss optimization
+* L2 regularization and vectorized gradient descent
+* Bag-of-Words NLP feature extraction pipeline
+* Hybrid text and numeric feature representation
+* Data cleaning, imputation, and normalization pipeline
+* Model comparison against Random Forest and Decision Tree baselines
+* Hyperparameter tuning experiments
+* Saved model artifacts for reproducible inference
+* Technical report documenting methodology and results
+
+---
+
+## Machine Learning Pipeline
+
+```text
+Raw Survey Responses
+        ↓
+Data Cleaning & Validation
+        ↓
+Numeric Features + Text Features
+        ↓
+Bag-of-Words Feature Extraction
+        ↓
+Hybrid Feature Matrix
+        ↓
+Feature Normalization
+        ↓
+Model Training & Hyperparameter Tuning
+        ↓
+Model Evaluation
+        ↓
+Artwork Classification
+```
+
+---
 
 ## Repository Structure
 
 ```text
-artsense-ml/
+hybrid-text-behavioural-classification/
+│
 ├── data/
-│   ├── raw/                  # Place raw CSV files here
-│   └── processed/            # Optional processed outputs
+│   ├── raw/
+│   │   └── ml_challenge_dataset.csv
+│   └── processed/
+│       └── ml_challenge_cleaned_dataset.csv
+│
+├── docs/
+│   └── ml_challenge_survey_questions.txt
+│
 ├── models/
-│   └── saved/                # Saved .npy model/preprocessing artifacts
-├── notebooks/                # Optional exploratory notebooks
+│   └── saved/
+│       ├── W.npy
+│       ├── b.npy
+│       ├── vocab.npy
+│       ├── bow_mean.npy
+│       ├── bow_std.npy
+│       ├── num_mean.npy
+│       └── num_std.npy
+│
+├── reports/
+│   ├── figures/
+│   │   ├── pipeline.png
+│   │   ├── model_comparison.png
+│   │   ├── learning_rate_tuning.png
+│   │   ├── lambda_tuning.png
+│   │   └── numeric_feature_distributions.png
+│   │
+│   ├── scripts/
+│   │   ├── model_comparison.py
+│   │   ├── hyperparameter_tuning.py
+│   │   └── numeric_feature_distributions.py
+│   │
+│   └── Hybrid_Text_and_Behavioural_Classification_Engine_Technical_Report.pdf
+│
 ├── src/
-│   └── art_sense_ml/
-│       ├── artifacts.py      # Save/load model artifacts
-│       ├── constants.py      # Label maps and feature column names
-│       ├── evaluation.py              # Model comparison experiments
-│       ├── features.py                # Hybrid text + numeric feature construction
-│       ├── hyperparameter_tuning.py   # Learning-rate/iteration/frequency/L2 sweeps
-│       ├── inference.py               # predict_all entry point
-│       ├── model.py                   # From-scratch logistic regression
-│       ├── preprocessing.py           # CSV cleaning and train/valid/test split
-│       ├── text_features.py           # Tokenization, vocabulary, Bag-of-Words
-│       ├── train.py                   # Training script
-│       └── visualization.py           # Dataset visualization utilities
+│   └── hybrid_text_classification/
+│
 ├── tests/
-│   └── test_smoke.py                  # Basic smoke tests
-├── pred.py                            # Backward-compatible wrapper
-├── data_visualization.py              # Backward-compatible visualization wrapper
-├── hyperparameter_tuning.py           # Backward-compatible tuning wrapper
-├── model_comparison.py                # Backward-compatible evaluation wrapper
+│
+├── pred.py
+├── data_visualization.py
+├── hyperparameter_tuning.py
+├── model_comparison.py
+│
 ├── requirements.txt
 ├── pyproject.toml
 └── README.md
 ```
 
+---
+
+## Dataset
+
+The dataset consists of student survey responses associated with three artwork classes.
+
+Each observation contains:
+
+### Numeric Features
+
+* Emotion intensity rating
+* Sombre rating
+* Content rating
+* Calm rating
+* Uneasy rating
+* Number of prominent colours
+* Number of noticed objects
+* Willingness to pay
+
+### Text Features
+
+* Emotional descriptions
+* Food analogies
+* Seasonal associations
+* Room placement preferences
+* Social viewing preferences
+* Imagined soundtracks
+
+The combination of structured and unstructured data creates a heterogeneous classification problem that requires both NLP and traditional machine learning techniques.
+
+---
+
+## NLP Pipeline
+
+All text-based survey fields are concatenated into a single document for each respondent.
+
+The documents are then:
+
+1. Tokenized using regex-based preprocessing
+2. Converted into a Bag-of-Words representation
+3. Transformed into sparse feature vectors
+4. Combined with cleaned numeric survey features
+
+The resulting feature space is high-dimensional and sparse, making logistic regression particularly effective for classification.
+
+---
+
+## Model
+
+The final model is a custom implementation of multiclass logistic regression using NumPy.
+
+Features include:
+
+* Softmax activation
+* Cross-entropy loss
+* Full-batch gradient descent
+* L2 regularization
+* Vectorized gradient computation
+* Probability-based prediction
+
+For each sample:
+
+[
+Z = XW^T + b
+]
+
+Class probabilities are computed using the softmax function and optimized through cross-entropy minimization.
+
+---
+
 ## Installation
 
-From the project root:
+Clone the repository and install dependencies:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate   # macOS/Linux
-# .venv\Scripts\activate    # Windows PowerShell
+git clone https://github.com/shenjie9/Hybrid-NLP-Behavioral-Classification-Engine.git
+
+cd Hybrid-NLP-Behavioral-Classification-Engine
 
 pip install -r requirements.txt
 pip install -e .
 ```
 
-## Data Setup
-
-Place the original training CSV here:
-
-```text
-data/raw/ml_challenge_dataset.csv
-```
-
-The raw dataset is not included in this cleaned repository. The saved model artifacts are included under:
-
-```text
-models/saved/
-```
-
-These artifacts allow prediction to work as long as the input CSV has the same columns as the original challenge dataset.
+---
 
 ## Running Predictions
 
-After installing the package:
+Using the package:
 
-```bash
-python -c "from art_sense_ml import predict_all; print(predict_all('data/raw/ml_challenge_dataset.csv')[:10])"
+```python
+from hybrid_text_classification import predict_all
+
+predictions = predict_all(
+    "data/raw/ml_challenge_dataset.csv"
+)
+
+print(predictions[:10])
 ```
 
-For compatibility with the original course interface, this still works:
+For compatibility:
 
 ```python
 from pred import predict_all
 
-predictions = predict_all("data/raw/ml_challenge_dataset.csv")
+predictions = predict_all(
+    "data/raw/ml_challenge_dataset.csv"
+)
+
 print(predictions[:10])
 ```
 
+---
+
 ## Training the Model
 
-```bash
-python -m art_sense_ml.train --data data/raw/ml_challenge_dataset.csv --model-dir models/saved
-```
-
-Optional hyperparameters:
+Train the custom logistic regression model:
 
 ```bash
-python -m art_sense_ml.train \
-  --data data/raw/ml_challenge_dataset.csv \
-  --model-dir models/saved \
-  --lr 0.05 \
-  --n-iters 3000 \
-  --l2 0.5 \
-  --min-freq 5
+python -m hybrid_text_classification.train \
+    --data data/raw/ml_challenge_dataset.csv \
+    --model-dir models/saved
 ```
 
-The training script prints train/validation/test loss and accuracy, then saves:
-
-- `W.npy`
-- `b.npy`
-- `vocab.npy`
-- `bow_mean.npy`
-- `bow_std.npy`
-- `num_mean.npy`
-- `num_std.npy`
-
-## Running Model Comparison
+Example with custom hyperparameters:
 
 ```bash
-python model_comparison.py --data data/raw/ml_challenge_dataset.csv --runs 10 --output reports/figures/model_comparison.png
+python -m hybrid_text_classification.train \
+    --data data/raw/ml_challenge_dataset.csv \
+    --model-dir models/saved \
+    --lr 0.05 \
+    --n-iters 3000 \
+    --l2 0.5 \
+    --min-freq 5
 ```
 
-This compares:
+---
 
-- custom Logistic Regression
-- Random Forest
-- Random Forest + Naive Bayes probabilities
-- Decision Tree
+## Model Comparison
 
-## Creating Visualizations
-
-### Numeric Feature Distributions
-
-To recreate the histogram grid for the numeric survey features:
+Generate model comparison results:
 
 ```bash
-python data_visualization.py \
-  --data data/raw/ml_challenge_dataset.csv \
-  --output reports/figures/data_distribution.png
+python model_comparison.py
 ```
 
-This produces a 2x4 grid showing the distributions of emotional intensity, sentiment ratings, number of colours, number of objects, and willingness to pay.
+The project compares:
 
-### Hyperparameter Tuning Plots
+* Custom Logistic Regression
+* Random Forest
+* Random Forest + Naive Bayes Hybrid
+* Decision Tree
 
-To run all hyperparameter experiments and save plots under `reports/figures/`:
+Results show that logistic regression performs best on the sparse text-driven feature space.
+
+---
+
+## Hyperparameter Tuning
+
+Hyperparameters explored include:
+
+* Learning rate
+* Number of training iterations
+* Vocabulary frequency threshold
+* L2 regularization strength
+
+Generate tuning figures:
 
 ```bash
-python hyperparameter_tuning.py \
-  --data data/raw/ml_challenge_dataset.csv \
-  --experiment all \
-  --output-dir reports/figures
+python hyperparameter_tuning.py
 ```
 
-You can also run one experiment at a time:
+Generated outputs include:
+
+* Learning rate validation curves
+* L2 regularization validation curves
+* Hyperparameter comparison figures
+
+---
+
+## Visualizations
+
+Generate numeric feature distributions:
 
 ```bash
-python hyperparameter_tuning.py --data data/raw/ml_challenge_dataset.csv --experiment lr
-python hyperparameter_tuning.py --data data/raw/ml_challenge_dataset.csv --experiment iters
-python hyperparameter_tuning.py --data data/raw/ml_challenge_dataset.csv --experiment minfreq
-python hyperparameter_tuning.py --data data/raw/ml_challenge_dataset.csv --experiment lambda
+python reports/scripts/numeric_feature_distributions.py
 ```
 
-The tuning scripts generate:
+Outputs:
 
-- `lr_tuning.png`
-- `iters_tuning.png`
-- `minfreq_tuning.png`
-- `lambda_tuning.png`
+```text
+reports/figures/numeric_feature_distributions.png
+```
 
-These plots are useful portfolio artifacts because they show model evaluation and hyperparameter selection rather than just final accuracy.
+The repository also contains:
 
-## Running Tests
+* Pipeline diagram
+* Model comparison plots
+* Learning rate tuning plots
+* Regularization tuning plots
+
+---
+
+## Testing
+
+Run the test suite:
 
 ```bash
 pytest
 ```
 
-The included smoke tests check that:
+The tests verify:
 
-- softmax outputs valid probability distributions
-- Bag-of-Words feature construction has the expected shape
-- the custom logistic regression model can fit a small toy dataset
+* Softmax probability correctness
+* Bag-of-Words feature construction
+* Logistic regression training behaviour
+* Core preprocessing functionality
 
-## Main Technical Details
+---
 
-### Text Features
+## Results
 
-Text survey responses are concatenated, lowercased, tokenized, and converted into binary Bag-of-Words vectors.
+The final logistic regression model achieved approximately:
 
-### Numeric Features
+* 89% training accuracy
+* 91% validation accuracy
 
-The model also uses structured survey features such as emotional intensity, calmness, uneasiness, number of noticed colours, number of noticed objects, and willingness to pay.
+Key findings:
 
-### Model
+* Text features were substantially more informative than numeric features alone.
+* Logistic regression outperformed tree-based approaches on sparse text data.
+* Combining NLP-derived features with behavioural survey responses produced the strongest predictive performance.
 
-The core classifier is a multiclass logistic regression model implemented with NumPy:
+---
 
-- softmax probability output
-- cross-entropy objective
-- full-batch gradient descent
-- L2 regularization
-- vectorized gradients
-=======
-# Hybrid-NLP-Behavioral-Classification-Engine
-Machine learning pipeline combining Bag-of-Words NLP features and structured behavioral survey data to perform multiclass classification using a custom logistic regression implementation.
->>>>>>> 4732d82977756f2305f122e7a919a8e38c4b4d6d
+## Technical Report
+
+A complete technical report is included in:
+
+```text
+reports/Hybrid_Text_and_Behavioural_Classification_Engine_Technical_Report.pdf
+```
+
+The report covers:
+
+* Data preparation
+* Feature engineering
+* NLP methodology
+* Model implementation
+* Hyperparameter tuning
+* Experimental results
+* Discussion and conclusions
+
+---
+
+## Skills Demonstrated
+
+* Python
+* NumPy
+* Pandas
+* Machine Learning
+* Natural Language Processing (NLP)
+* Logistic Regression
+* Feature Engineering
+* Data Cleaning
+* Hyperparameter Tuning
+* Data Visualization
+* Software Design
+* Scientific Reporting
