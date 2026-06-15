@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ArtSense ML
 
 **Hybrid NLP and sentiment-based artwork classification engine**
@@ -227,3 +228,7 @@ The core classifier is a multiclass logistic regression model implemented with N
 - full-batch gradient descent
 - L2 regularization
 - vectorized gradients
+=======
+# Hybrid-NLP-Behavioral-Classification-Engine
+Machine learning pipeline combining Bag-of-Words NLP features and structured behavioral survey data to perform multiclass classification using a custom logistic regression implementation.
+>>>>>>> 4732d82977756f2305f122e7a919a8e38c4b4d6d
