@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Data files
+/data/raw/*.csv
+/data/processed/*.csv
+
+# OS/editor files
+.DS_Store
+.vscode/
+.idea/
+__MACOSX/
+
+# Generated outputs
+*.log
+
+venv/
+.idea/
+
+__pycache__/
+*.pyc
+
+.DS_Store
+__MACOSX/
+
+.ipynb_checkpoints/
+
+models/saved/*.tmp
