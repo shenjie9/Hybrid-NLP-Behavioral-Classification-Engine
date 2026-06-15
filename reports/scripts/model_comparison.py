@@ -5,12 +5,16 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-SRC_DIR = Path(__file__).resolve().parent / "src"
+ROOT_DIR = Path(__file__).resolve().parents[2]
+SRC_DIR = ROOT_DIR / "src"
+
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from art_sense_ml.evaluation import compare_models, main  # noqa: E402,F401
-
+from hybrid_text_classification.evaluation import (  # noqa: E402,F401
+    compare_models,
+    main,
+)
 
 if __name__ == "__main__":
     main()

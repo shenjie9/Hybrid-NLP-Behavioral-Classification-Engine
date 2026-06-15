@@ -2,8 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-DATA_PATH = Path("data/processed/ml_challenge_cleaned_dataset.csv")
-OUTPUT_PATH = Path("reports/figures/numeric_feature_distributions.png")
+ROOT_DIR = Path(__file__).resolve().parents[2]
+
+DATA_PATH = ROOT_DIR / "data" / "processed" / "ml_challenge_cleaned_dataset.csv"
+OUTPUT_PATH = ROOT_DIR / "reports" / "figures" / "numeric_feature_distributions.png"
 
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 

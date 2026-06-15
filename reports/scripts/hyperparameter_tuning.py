@@ -5,11 +5,13 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-SRC_DIR = Path(__file__).resolve().parent / "src"
+ROOT_DIR = Path(__file__).resolve().parents[2]
+SRC_DIR = ROOT_DIR / "src"
+
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from art_sense_ml.hyperparameter_tuning import (  # noqa: E402,F401
+from hybrid_text_classification.hyperparameter_tuning import (  # noqa: E402,F401
     main,
     prepare_data,
     run_all_tuning,
