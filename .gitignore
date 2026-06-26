@@ -35,4 +35,6 @@ __MACOSX/
 
 .ipynb_checkpoints/
 
+.Rhistory
+
 models/saved/*.tmp
